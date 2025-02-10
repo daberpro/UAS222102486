@@ -11,11 +11,11 @@ import 'datatables.net-responsive-bs5';
 })
 export class MahasiswaComponent implements AfterViewInit {
 
-  async getData(): Promise<void>{
+  async getData(): Promise<void> {
     const raw = await fetch("https://stmikpontianak.net/011100862/tampilMahasiswa.php");
     const data = await raw.json();
 
-    data.forEach((d : any) =>{
+    data.forEach((d: any) => {
 
       const row = [
         d["NIM"],
@@ -36,8 +36,26 @@ export class MahasiswaComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.table = new DataTable('#mahasiswa',{
+    this.table = new DataTable('#mahasiswa', {
       responsive: true,
+      columnDefs: [
+        {
+          render: function (data, type) {
+            if (data.toLowerCase() === "laki-laki" || data.toLowerCase() === "laki laki") {
+
+              return '<i class="fas fa-mars p-2"></i> '+ data;
+            }
+
+            if (data.toLowerCase() === "perempuan") {
+
+              return '<i class="fas fa-venus p-2"></i> ' + data;
+            }
+
+            return data;
+          },
+          targets: [2]
+        }
+      ]
     });
     this.getData().then().catch(console.error);
   }
